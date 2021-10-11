@@ -1,5 +1,5 @@
 # 42_slots
-42 correction slots
+42 correction slots text-based monitor
 
 ## Install requirements
 
