@@ -8,6 +8,7 @@ import random
 import os
 import getpass
 import datetime
+import pykeepass
 
 # -----------------------------------------------------------------------------
 # modifications
@@ -24,8 +25,16 @@ USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78
 
 # -----------------------------------input-------------------------------------
 
-s = int(input("Starting day (today = 0): "))
-e = int(input("Ending day (Same day = 0): "))
+while True:
+    try:
+        s = input("Starting day (today = 0): ")
+        s = (0 if s == '' else int(s))
+        e = input("Ending day (Same day = 0): ")
+        e = (0 if e == '' else int(e))
+        break
+    except Exception as error:
+        print("Must be an int")
+
 START = datetime.date.today() + datetime.timedelta(days=s)
 END = START + datetime.timedelta(days=1+e)
 
@@ -34,6 +43,10 @@ END = str(END)
 
 print("start:", START, "00:00")
 print("end  :", END, "00:00")
+
+# ------------------------------------db-------------------------------------
+
+#if intra.kdbx, ask if use credentials or overwrite them
 
 try:
     USER = input("Username: ") #'username'
@@ -48,6 +61,8 @@ else:
         print("******", end='')
         print(PWD[-1], end='')
     print()
+#ask password for db
+pykeepass.create_database("intra.kdbx", password="s1mpl3_p4ssw0rd")
 
 # ------------------------------------auth-------------------------------------
 
@@ -83,12 +98,16 @@ def auth():
     # request
 
     login_req = s.post(SIGN_URL, headers=HEADERS, data=login_payload)
+    verif = s.get('https://profile.intra.42.fr/users/./locations_stats.json')
 
     print("intra_42:  ", intra_42_token)
     print("mkra:      ", mkra_token)
     print("auth token:", authenticity_token)
     print("status:    ", login_req.status_code)
+    print("logged in: ", verif.status_code == 404)
 
+    if (login_req.status_code != 200 or verif.status_code != 404):
+        exit()
     return (s)
 
 # --------------------------------------main-----------------------------------
