@@ -176,22 +176,28 @@ def creds():
 def clear():
     _ = subprocess.call('clear' if os.name =='posix' else 'cls')
 
+def show_slots(gget):
+    print ("\n----------- SLOTS -------------")
+    for page in gget:
+        print (page['start'][11:19])
+        print (page['end'][11:19], end="\n\n")
+
 def main():
     s = creds()
     if (not s):
         return
     RL = URL + PROJECT + JSON + '?team_id=' + TEAM_ID + '&start=' + START + '&end=' + END
     print(RL)
+    gold = s.get(RL).json()
+    show_slots(gold)
     while True:
         time.sleep(2)
-        clear()
         gget = s.get(RL).json()
-        print ("------------------------")
-        for page in gget:
-            print (page['start'][11:19])
-            print (page['end'][11:19])
-            print ()
-        time.sleep(2)
+        if (gold != gget):
+            clear()
+            show_slots(gget)
+            gold = gget
+            time.sleep(2)
 
 # -----------------------------------------------------------------------------
 
