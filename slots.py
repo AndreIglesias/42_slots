@@ -107,9 +107,6 @@ def save_creds():
         PWD = getpass.getpass() #'*****'
         session = auth()
         while (not session):
-            print('Password entered: ', end='')
-            print(PWD[0], end='')
-            print("******" + PWD[-1]) if (len(PWD) > 1) else print()
             print("Sorry but couldn't login with those credentials")
             USER = input("Username: ")
             PWD = getpass.getpass()
