@@ -44,27 +44,10 @@ END = str(END)
 print("start:", START, "00:00")
 print("end  :", END, "00:00")
 
-# ------------------------------------db-------------------------------------
-
-#if intra.kdbx, ask if use credentials or overwrite them
-
-try:
-    USER = input("Username: ") #'username'
-    PWD = getpass.getpass() #'*****'
-except Exception as error:
-    print('Error', error)
-    exit()
-else:
-    print('Password entered: ', end='')
-    print(PWD[0], end='')
-    if (len(PWD) > 1):
-        print("******", end='')
-        print(PWD[-1], end='')
-    print()
-#ask password for db
-pykeepass.create_database("intra.kdbx", password="s1mpl3_p4ssw0rd")
-
 # ------------------------------------auth-------------------------------------
+
+USER = ''
+PWD = ''
 
 def auth():
     # authentication
@@ -107,8 +90,89 @@ def auth():
     print("logged in: ", verif.status_code == 404)
 
     if (login_req.status_code != 200 or verif.status_code != 404):
-        exit()
+        s.close()
+        return (None)
     return (s)
+
+# ------------------------------------db-------------------------------------
+
+#if intra.kdbx, ask if use credentials or overwrite them
+
+def save_creds():
+    global USER
+    global PWD
+
+    try:
+        USER = input("Username: ") #'username'
+        PWD = getpass.getpass() #'*****'
+        session = auth()
+        while (not session):
+            print('Password entered: ', end='')
+            print(PWD[0], end='')
+            print("******" + PWD[-1]) if (len(PWD) > 1) else print()
+            print("Sorry but couldn't login with those credentials")
+            USER = input("Username: ")
+            PWD = getpass.getpass()
+            session = auth()
+    except Exception as error:
+        print('Error', error)
+        exit()
+    else:
+        print('Password entered: ', end='')
+        print(PWD[0], end='')
+        print("******" + PWD[-1]) if (len(PWD) > 1) else print()
+        save_db = ' '
+        while (save_db not in {'', 'Y', 'y', 'n', 'N'}):
+            save_db = input('Save credentials in a keepass database (intra.kdbx) [Y/n] ')
+        if (save_db not in {'', 'Y', 'y'}):
+            return (session)
+        if (not os.path.isfile('intra.kdbx')):
+            #create db
+            kp = pykeepass.create_database("intra.kdbx", password="s1mpl3_p4ssw0rd")
+        else:
+            #add to db
+            kp = pykeepass.PyKeePass("intra.kdbx", password="s1mpl3_p4ssw0rd")
+            #delete before adding if entry already exists
+            entry = kp.find_entries(username=USER, first=True)
+            while (entry):
+                entry = kp.find_entries(username=USER, first=True)
+                kp.delete_entry(entry)
+        kp.add_entry(kp.root_group, 'intra', USER, PWD)
+        kp.save()
+    return (session)
+
+def creds():
+    global USER
+    global PWD
+
+    if (os.path.isfile('intra.kdbx')):
+        creds = ' '
+        while (creds not in {'', 'Y', 'y', 'n', 'N'}):
+            creds = input('Use credentials of the database intra.kdbx [Y/n] ')
+        if (creds in {'', 'Y', 'y'}):
+            try:
+                kp = pykeepass.PyKeePass("intra.kdbx", password="s1mpl3_p4ssw0rd")
+                username = input('username: ')
+                while (not kp.find_entries(username=username, first=True)):
+                    print("entry doesn't exists")
+                    username = input('username: ')
+                USER = kp.find_entries(username=username, first=True)
+                PWD = USER.password
+                USER = USER.username
+                session = auth()
+                if (not session):
+                    print("Cannot login with credentials, please verify the database")
+                    exit()
+                return (session)
+            except Exception as error:
+                print('Error', error)
+                return (save_creds())
+        else:
+            #add to db
+            return (save_creds())
+    else:
+        #create db
+        return (save_creds())
 
 # --------------------------------------main-----------------------------------
 
@@ -116,7 +180,9 @@ def clear():
     _ = subprocess.call('clear' if os.name =='posix' else 'cls')
 
 def main():
-    s = auth()
+    s = creds()
+    if (not s):
+        return
     RL = URL + PROJECT + JSON + '?team_id=' + TEAM_ID + '&start=' + START + '&end=' + END
     print(RL)
     while True:
