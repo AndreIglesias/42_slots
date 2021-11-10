@@ -15,6 +15,7 @@ import pykeepass
 
 PROJECT = 'cpp-module-08'
 TEAM_ID = '3815675'
+DBPWD   = 's1mpl3_p4ssw0rd'
 
 # -----------------------------------------------------------------------------
 # header
@@ -125,10 +126,10 @@ def save_creds():
             return (session)
         if (not os.path.isfile('intra.kdbx')):
             #create db
-            kp = pykeepass.create_database("intra.kdbx", password="s1mpl3_p4ssw0rd")
+            kp = pykeepass.create_database("intra.kdbx", password=DBPWD)
         else:
             #add to db
-            kp = pykeepass.PyKeePass("intra.kdbx", password="s1mpl3_p4ssw0rd")
+            kp = pykeepass.PyKeePass("intra.kdbx", password=DBPWD)
             #delete before adding if entry already exists
             entry = kp.find_entries(username=USER, first=True)
             while (entry):
@@ -148,7 +149,7 @@ def creds():
             creds = input('Use credentials of the database intra.kdbx [Y/n] ')
         if (creds in {'', 'Y', 'y'}):
             try:
-                kp = pykeepass.PyKeePass("intra.kdbx", password="s1mpl3_p4ssw0rd")
+                kp = pykeepass.PyKeePass("intra.kdbx", password=DBPWD)
                 username = input('username: ')
                 while (not kp.find_entries(username=username, first=True)):
                     print("entry doesn't exists")
