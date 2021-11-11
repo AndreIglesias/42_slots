@@ -105,12 +105,12 @@ def save_creds():
 
     try:
         USER = input("Username: ") #'username'
-        PWD = getpass.getpass() #'*****'
+        PWD  = getpass.getpass() #'*****'
         session = auth()
         while (not session):
             print("Sorry but couldn't login with those credentials")
             USER = input("Username: ")
-            PWD = getpass.getpass()
+            PWD  = getpass.getpass()
             session = auth()
     except Exception as error:
         print('Error', error)
@@ -123,6 +123,8 @@ def save_creds():
         while (save_db not in {'', 'Y', 'y', 'n', 'N'}):
             save_db = input('Save credentials in a keepass database (intra.kdbx) [Y/n] ')
         if (save_db not in {'', 'Y', 'y'}):
+            USER = None
+            PWD  = None
             return (session)
         if (not os.path.isfile('intra.kdbx')):
             #create db
@@ -137,6 +139,8 @@ def save_creds():
                 kp.delete_entry(entry)
         kp.add_entry(kp.root_group, 'intra', USER, PWD)
         kp.save()
+    USER = None
+    PWD  = None
     return (session)
 
 def creds():
@@ -155,9 +159,11 @@ def creds():
                     print("entry doesn't exists")
                     username = input('username: ')
                 USER = kp.find_entries(username=username, first=True)
-                PWD = USER.password
+                PWD  = USER.password
                 USER = USER.username
                 session = auth()
+                USER = None
+                PWD  = None
                 if (not session):
                     print("Cannot login with credentials, please verify the database")
                     exit()
