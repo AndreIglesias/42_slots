@@ -7,6 +7,13 @@
 
 modify **PROJECT** and **TEAM_ID** variables inside *slots.py* before running.
 
+![Schematic](42slots.png)
+
 ## RUN
 
 `python3 slots.py`
+
+or
+
+`chmod +x slots.py`
+`./slots.py`
