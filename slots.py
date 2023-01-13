@@ -13,8 +13,8 @@ import pykeepass
 # -----------------------------------------------------------------------------
 # modifications
 
-PROJECT = 'my-project'
-TEAM_ID = '0000000'
+PROJECT = '42cursus-computorv1'
+TEAM_ID = '4548004'
 DBPWD   = 's1mpl3_p4ssw0rd'
 
 # -----------------------------------------------------------------------------
@@ -67,7 +67,6 @@ def auth():
 
     # tokens
 
-    mkra_token = g.cookies['_mkra_ctxt']
     intra_42_token = g.cookies['_intra_42_session_production']
     authenticity_token = bs(g.text, 'html.parser').find('input', {'name' : 'authenticity_token'}).get('value')
 
@@ -85,7 +84,6 @@ def auth():
     verif = s.get('https://profile.intra.42.fr/users/./locations_stats.json')
 
     print("intra_42:  ", intra_42_token)
-    print("mkra:      ", mkra_token)
     print("auth token:", authenticity_token)
     print("status:    ", login_req.status_code)
     print("logged in: ", verif.status_code == 404)
