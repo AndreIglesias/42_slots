@@ -39,5 +39,5 @@ $ ./slots.py
 
 ## License
 
-> [GPL v3.0](https://github.com/AndreIglesias/42_slots/blob/main/LICENSE) &nbsp;&middot;&nbsp;
+> [GPL v3.0](LICENSE) &nbsp;&middot;&nbsp;
 > [@AndreIglesias](https://github.com/AndreIglesias)
