@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://github.com/AndreIglesias/42_slots"><img src="https://github.com/AndreIglesias/42_slots/blob/main/logo.png" alt="Slots" width="200"></a>
+  <a href="https://github.com/AndreIglesias/42_slots"><img src="logo.png" alt="Slots" width="200"></a>
   <br>
   42_Slots
   <br>
