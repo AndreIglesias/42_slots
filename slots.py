@@ -3,7 +3,8 @@
 from bs4 import BeautifulSoup as bs
 import subprocess
 import time
-import requests
+#import requests
+from requests_html import HTMLSession
 import random
 import os
 import getpass
@@ -13,8 +14,8 @@ import pykeepass
 # -----------------------------------------------------------------------------
 # modifications
 
-PROJECT = '42cursus-computorv1'
-TEAM_ID = '4548004'
+PROJECT = 'ft_select'
+TEAM_ID = '3688658'
 DBPWD   = 's1mpl3_p4ssw0rd'
 
 # -----------------------------------------------------------------------------
@@ -62,7 +63,7 @@ def auth():
         'Referer'    : SIGN_URL
     }
 
-    s = requests.session()
+    s = HTMLSession()
     g = s.get(SIGN_ORIGIN)
 
     # tokens
@@ -192,8 +193,13 @@ def main():
     if (not s):
         return
     RL = URL + PROJECT + JSON + '?team_id=' + TEAM_ID + '&start=' + START + '&end=' + END
+    RL2 = URL + PROJECT + '/slots' + '?team_id=' + TEAM_ID + '&start=' + START + '&end=' + END
     print(RL)
+    print(RL2)
     gold = s.get(RL).json()
+    #slot_select = s.get(RL2)
+    #slot_select.html.render()
+    #print(gold, slot_select.html)
     show_slots(gold)
     while True:
         time.sleep(2)
@@ -203,6 +209,7 @@ def main():
             show_slots(gget)
             gold = gget
             time.sleep(2)
+        #break
 
 # -----------------------------------------------------------------------------
 
